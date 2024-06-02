@@ -58,14 +58,22 @@ def frames_from_data(filename, format):
             real_sizelist = [real_width, real_height]
             frame['real_sizelist'] = real_sizelist
             offsetlist = to_list(frame['offset'])
-            offset_x = int(offsetlist[1] if frame['rotated'] else offsetlist[0])
-            offset_y = int(offsetlist[0] if frame['rotated'] else offsetlist[1])
-            frame['result_box'] = (
-                int((real_sizelist[0] - width) / 2 + offset_x),
-                int((real_sizelist[1] - height) / 2 + offset_y),
-                int((real_sizelist[0] + width) / 2 + offset_x),
-                int((real_sizelist[1] + height) / 2 + offset_y)
-            )
+            offset_x = int(float(offsetlist[1] if frame['rotated'] else offsetlist[0]))
+            offset_y = int(float(offsetlist[0] if frame['rotated'] else offsetlist[1]))
+            if frame['rotated']:
+                frame['result_box'] = (
+                    int((real_sizelist[0] - width) / 2 + offset_x),
+                    int((real_sizelist[1] - height) / 2 + offset_y),
+                    int((real_sizelist[0] + width) / 2 + offset_x),
+                    int((real_sizelist[1] + height) / 2 + offset_y)
+                )
+            else:
+                frame['result_box'] = (
+                    int((real_sizelist[0] - width) / 2 + offset_x),
+                    int((real_sizelist[1] - height) / 2 - offset_y),
+                    int((real_sizelist[0] + width) / 2 + offset_x),
+                    int((real_sizelist[1] + height) / 2 - offset_y)
+                )
         return frames
     elif format == 'json':
         json_data = open(data_filename)
